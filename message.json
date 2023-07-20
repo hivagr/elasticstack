@@ -1,0 +1,33 @@
+{
+  "@timestamp": "2023-07-13T12:34:56.789Z",
+  "message": "This is a sample log entry in the production environment.",
+  "severity": "INFO",
+  "source": "example.com",
+  "application": "myapp",
+  "namespace": "myapp-prd",
+  "environment": "prd"
+}, {
+  "@timestamp": "2023-07-13T12:34:56.789Z",
+  "message": "This is a sample log entry in the development environment.",
+  "severity": "INFO",
+  "source": "example.com",
+  "application": "myapp",
+  "namespace": "myapp-dev",
+  "environment": "dev"
+}, {
+  "@timestamp": "2023-07-13T12:34:56.789Z",
+  "message": "This is a sample log entry in the test environment.",
+  "severity": "INFO",
+  "source": "example.com",
+  "application": "myapp",
+  "namespace": "myapp-tst",
+  "environment": "tst"
+}, {
+  "@timestamp": "2023-07-13T12:34:56.789Z",
+  "message": "This is a sample log entry in the acceptance environment.",
+  "severity": "INFO",
+  "source": "example.com",
+  "application": "myapp",
+  "namespace": "myapp-acc",
+  "environment": "acc"
+}

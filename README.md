@@ -61,6 +61,12 @@ curl -XPOST -H "Content-Type: application/json" -d '{
 }' http://localhost:5044
 ```
 
+This will post a couple of messages on port `5044` where logstash is listening on:
+
+```bash
+./send_http_logstash.sh
+```
+
 ## Configuration
 
 The configuration files for each component are located in the config directory. Feel free to modify these files according to your requirements.
