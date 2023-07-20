@@ -17,6 +17,8 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.8.1
+    environment:
+      - xpack.monitoring.enabled=true
     ports:
       - target: 5601
         published: 5601
@@ -39,7 +41,7 @@ services:
         target: /usr/share/logstash/config
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - xpack.monitoring.enabled=false
+      - xpack.monitoring.enabled=true
     depends_on:
       - elasticsearch
     networks:
@@ -47,11 +49,20 @@ services:
 
   metricbeat:
     image: docker.elastic.co/beats/metricbeat:8.7.1
+    volumes:
+      - type: bind
+        source: ./metricbeat-modules.d/
+        target: /usr/share/metricbeat/modules.d
+      - type: bind
+        source: ./metricbeat-config/metricbeat.yml
+        target: /usr/share/metricbeat/metricbeat.yml
     environment:
       - setup.kibana.host=kibana:5601
       - output.elasticsearch.hosts=["elasticsearch:9200"]
     depends_on:
       - elasticsearch
+      - kibana
+      - logstash
     networks:
       - elastic
 
@@ -59,6 +70,8 @@ services:
     image: docker.elastic.co/beats/filebeat:8.7.1
     volumes:
       - "./filebeat-config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
+    ports:
+      - '5066:5066'
     environment:
       - setup.kibana.host=kibana:5601
       - output.elasticsearch.hosts=["elasticsearch:9200"]

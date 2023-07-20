@@ -8,4 +8,9 @@ processors:
   - add_docker_metadata: ~
 
 output.elasticsearch:
-  hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
+  hosts: 'elasticsearch:9200'
+
+http.enabled: true
+#http.port: 5066
+monitoring.enabled: false
+#monitoring.cluster_uuid: "Lew0js7ARa6Mircl9IfXbQ"
