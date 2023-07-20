@@ -1,0 +1,7 @@
+- module: beat
+  metricsets:
+    - stats
+    - state
+  period: 10s
+  hosts: ["http://filebeat:5066"]
+  xpack.enabled: true
