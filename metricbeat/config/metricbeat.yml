@@ -1,0 +1,22 @@
+metricbeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: true
+
+processors:
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+
+output.elasticsearch:
+  hosts: ['https://es01:9200']
+  username: "elastic"
+  password: "elastic"
+  ssl.certificate_authorities: ["/usr/share/metricbeat/certs/ca/ca.crt"]
+  ssl.certificate: "/usr/share/metricbeat/certs/metricbeat/metricbeat.crt"
+  ssl.key: "/usr/share/metricbeat/certs/metricbeat/metricbeat.key"
+  ssl.verification_mode: none
+  ssl.enabled: true
+
+setup.kibana:
+  host: "kibana:5601"
+  username: "kibana_system"
+  password: "elastic"

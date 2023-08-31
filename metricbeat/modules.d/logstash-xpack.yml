@@ -4,7 +4,7 @@
 - module: logstash
   hosts: ["logstash:9600"]
   enabled: true
-  metricsets: ["node", "node_stats"]
+  #metricsets: ["node", "node_stats"]
   period: 10s
   #username: "user"
   #password: "secret"

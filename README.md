@@ -28,7 +28,7 @@ To start the Elastic Stack services, follow these steps:
 2. Navigate to the repository directory.
 
 ```bash
-$ git clone https://github.com/your-username/elastic-stack-docker.git
+$ git clone https://github.com/hivagr/elastic-stack-docker.git
 $ cd elastic-stack-docker
 ```
 
