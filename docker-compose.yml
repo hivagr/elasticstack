@@ -72,6 +72,18 @@ services:
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
+          "  - name: fleet-server\n"\
+          "    dns:\n"\
+          "      - fleet-server\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: elastic-agent\n"\
+          "    dns:\n"\
+          "      - elastic-agent\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
           > config/certs/instances.yml;
           bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
           unzip config/certs/certs.zip -d config/certs;
@@ -99,6 +111,7 @@ services:
       setup:
         condition: service_healthy
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    hostname: es01
     volumes:
       - "certs:/usr/share/elasticsearch/config/certs"
       - "esdata01:/usr/share/elasticsearch/data"
@@ -112,6 +125,7 @@ services:
       - discovery.seed_hosts=es02
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - bootstrap.memory_lock=true
+      - xpack.security.authc.api_key.enabled=true
       - xpack.security.enabled=true
       - xpack.security.http.ssl.enabled=true
       - xpack.security.http.ssl.key=certs/es01/es01.key
@@ -144,6 +158,7 @@ services:
     depends_on:
       - es01
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    hostname: es02
     volumes:
       - "certs:/usr/share/elasticsearch/config/certs"
       - "esdata02:/usr/share/elasticsearch/data"
@@ -154,6 +169,7 @@ services:
       - cluster.initial_master_nodes=es01,es02
       - discovery.seed_hosts=es01
       - bootstrap.memory_lock=true
+      - xpack.security.authc.api_key.enabled=true
       - xpack.security.enabled=true
       - xpack.security.http.ssl.enabled=true
       - xpack.security.http.ssl.key=certs/es02/es02.key
@@ -206,6 +222,7 @@ services:
       timeout: 10s
       retries: 120
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    hostname: kibana
     ports:
       - ${KIBANA_PORT}:5601
     networks:
@@ -221,6 +238,7 @@ services:
       es02:
         condition: service_healthy
     image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+    hostname: logstash
     ports:
       - '5044:5044'
     networks:
@@ -238,6 +256,7 @@ services:
       kibana:
         condition: service_healthy
     image: docker.elastic.co/beats/metricbeat:${STACK_VERSION}
+    hostname: metricbeat
     networks:
       - elastic
     volumes:
@@ -254,49 +273,17 @@ services:
       kibana:
         condition: service_healthy
     image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
+    hostname: filebeat
     networks:
       - elastic
     ports:
       - '5066:5066'
     volumes:
+      - "certs:/usr/share/filebeat/certs"
       - "./filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
       - "./filebeat/modules.d/:/usr/share/filebeat/modules.d"
       - "eslogs01:/usr/share/es01/logs"
       - "eslogs02:/usr/share/es02/logs"
-
-  apm-server:
-    depends_on:
-      es01:
-        condition: service_healthy
-      es02:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "--write-out", "'HTTP %{http_code}'", "--silent", "--output", "/dev/null", "http://localhost:8200/healthcheck"]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-    image: docker.elastic.co/apm/apm-server:${STACK_VERSION}
-    ports:
-      - "8200:8200"
-    volumes:
-      - './apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro'
-      - certs:/usr/share/apm-server/certs
-    cap_drop:
-      - ALL
-    cap_add:
-      - CHOWN
-      - DAC_OVERRIDE
-      - SETGID
-      - SETUID
-    logging:
-      driver: 'json-file'
-      options:
-          max-size: '2m'
-          max-file: '5'
-    networks:
-      - elastic
 
 volumes:
   certs:
