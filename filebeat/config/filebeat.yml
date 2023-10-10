@@ -11,6 +11,11 @@ output.elasticsearch:
   hosts: "https://es01:9200"
   username: "elastic"
   password: "elastic"
+  ssl.certificate_authorities: ["/usr/share/filebeat/certs/ca/ca.crt"]
+  ssl.certificate: "/usr/share/filebeat/certs/filebeat/filebeat.crt"
+  ssl.key: "/usr/share/filebeat/certs/filebeat/filebeat.key"
+  ssl.verification_mode: none
+  ssl.enabled: true
 
 setup.kibana:
   host: 'kibana:5601'
@@ -19,3 +24,4 @@ setup.kibana:
 
 #http.enabled: true
 #monitoring.enabled: false
+xpack.monitoring.enabled: true

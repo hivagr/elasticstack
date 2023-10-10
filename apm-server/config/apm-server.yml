@@ -859,27 +859,28 @@ output.elasticsearch:
 
 # Set to true to enable the monitoring reporter.
 #monitoring.enabled: false
+monitoring.enabled: true
 
 # Most settings from the Elasticsearch output are accepted here as well.
 # Note that these settings should be configured to point to your Elasticsearch *monitoring* cluster.
 # Any setting that is not set is automatically inherited from the Elasticsearch
 # output configuration. This means that if you have the Elasticsearch output configured,
 # you can simply uncomment the following line.
-#monitoring.elasticsearch:
+monitoring.elasticsearch:
 
   # Protocol - either `http` (default) or `https`.
-  #protocol: "https"
+  protocol: "https"
 
   # Authentication credentials - either API key or username/password.
   #api_key: "id:api_key"
-  #username: "elastic"
-  #password: "changeme"
+  username: "elastic"
+  password: "elastic"
 
   # Array of hosts to connect to.
   # Scheme and port can be left out and will be set to the default (`http` and `9200`).
   # In case you specify and additional path, the scheme is required: `http://elasticsearch:9200/path`.
   # IPv6 addresses should always be defined as: `https://[2001:db8::1]:9200`.
-  #hosts: ["elasticsearch:9200"]
+  hosts: ["es01:9200"]
 
   # Set gzip compression level.
   #compression_level: 0
@@ -912,6 +913,7 @@ output.elasticsearch:
 
   # Enable custom SSL settings. Set to false to ignore custom SSL settings for secure communication.
   #ssl.enabled: true
+  ssl.enabled: true
 
   # Optional SSL configuration options. SSL is off by default, change the `protocol` option if you want to enable `https`.
   #
@@ -931,6 +933,7 @@ output.elasticsearch:
   # diagnostic mechanism when attempting to resolve TLS errors; its use in
   # production environments is strongly discouraged.
   #ssl.verification_mode: full
+  ssl.verification_mode: none
 
   # List of supported/valid TLS versions. By default all TLS versions 1.0 up to
   # 1.2 are enabled.
@@ -938,12 +941,15 @@ output.elasticsearch:
 
   # List of root certificates for HTTPS server verifications.
   #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+  ssl.certificate_authorities: ["/usr/share/apm-server/certs/ca/ca.crt"]
 
   # Certificate for SSL client authentication.
   #ssl.certificate: "/etc/pki/client/cert.pem"
+  ssl.certificate: "/usr/share/apm-server/certs/apm-server/apm-server.crt"
 
   # Client Certificate Key
   #ssl.key: "/etc/pki/client/cert.key"
+  ssl.key: "/usr/share/apm-server/certs/apm-server/apm-server.key"
 
   # Optional passphrase for decrypting the Certificate Key.
   # It is recommended to use the provided keystore instead of entering the passphrase in plain text.
