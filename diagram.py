@@ -1,6 +1,9 @@
 from diagrams import Cluster, Diagram
 from diagrams.aws.analytics import ES
-from diagrams.elastic.observability import APM
+from diagrams.elastic.agent import Agent
+from diagrams.elastic.agent import Fleet
+from diagrams.elastic.beats import APM
+#from diagrams.elastic.observability import APM
 from diagrams.elastic.elasticsearch import Beats
 from diagrams.elastic.elasticsearch import Kibana
 from diagrams.elastic.elasticsearch import Logstash
@@ -11,6 +14,7 @@ load_dotenv()
 
 apm_version           = os.getenv("STACK_VERSION")
 filebeat_version      = os.getenv("STACK_VERSION")
+fleet_version         = os.getenv("STACK_VERSION")
 metricbeat_version    = os.getenv("STACK_VERSION")
 logstash_version      = os.getenv("STACK_VERSION")
 kibana_version        = os.getenv("STACK_VERSION")
@@ -25,12 +29,14 @@ with Diagram("Docker cluster", show=True):
         apmserver     = APM("APM-server: " +apm_version)
         metricbeat    = Beats("Metricbeat: " +metricbeat_version)
         filebeat      = Beats("Filebeat: " +filebeat_version)
+        fleet_server  = Fleet("Fleet-server: " +fleet_version)
         logstash      = Logstash("Logstash: " +logstash_version)
         kibana        = Kibana("Kibana: " +kibana_version)
         elasticsearch = ES("Elasticsearch: " +elastic_version)
 
-    apmserver >> elasticsearch
+    apmserver >> fleet_server
     metricbeat >> elasticsearch
     filebeat >> elasticsearch
+    fleet_server >> elasticsearch
     logstash >> elasticsearch
     elasticsearch << kibana

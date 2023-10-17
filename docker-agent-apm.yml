@@ -1,28 +1,23 @@
 version: "3.9"
 
 services:
-  agent-nginx:
+  agent-apm:
     environment:
       - FLEET_ENROLL=1
       - FLEET_INSECURE=true
       - FLEET_URL=https://fleet-server:8220
-      - FLEET_ENROLLMENT_TOKEN=WWhOLU40c0JaSm15UWpxWlJ2c0Y6NUcyZlJwQ0tUOTJPNDNlQm13SGgxZw==
+      - FLEET_ENROLLMENT_TOKEN=eEtTVlBJc0JNa2tMTkFfcFNsTXQ6ME5OTER5bjBSUC1fRUlKNmxRNk9yQQ==
       - KIBANA_HOST=http://kibana:5601
       - KIBANA_FLEET_USERNAME=elastic
       - KIBANA_FLEET_PASSWORD=elastic
-    hostname: agent-nginx
+    hostname: agent-apm
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
     ports:
-      - "1234:80"
+      - "8201:8200"
     volumes:
       - certs:/usr/share/certs
     networks:
       - elastic
-    command: ["apt update && \
-             apt install nginx -y && \
-             chown -R elastic-agent:elastic-agent /var/log/nginx/* \
-             /etc/init.d/nginx start"]
-    user: root
 
 volumes:
   certs:
