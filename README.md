@@ -76,6 +76,10 @@ To install the Fleet server follow the following steps:
 
 ### Start APM
 
+There are 2 option that you can use for APM one that runs as a integration based on the elastic-agent and one that runs as separate server.
+
+#### Based on elastic-agent
+
 1. Go the [APM](http://localhost:5601/app/home#/tutorial/apm) integration and click on **APM integration** and then on **Add Elastic APM** <br>
 
    Fill in the following fields:
@@ -95,6 +99,13 @@ To install the Fleet server follow the following steps:
    ```
 5. Click now on **Install APM Agent** and then **Check APM Server status**
 
+#### Based on APM server
+
+1. Start the docker-compose file this will start a apm-server container and it will add it to the elastic cluster.
+   ```
+   docker-compose -f docker-apm.yml up
+   ```
+
 
 ## Usage
 
@@ -102,8 +113,10 @@ The configuration files for each component are located in the config directory. 
 
 Here's a brief overview of each component's configuration directories:
 
-* Logstash: `logstash`
+* APM-server: `apm-server`
 * Filebeat: `filebeat`
+* Logstash: `logstash`
+* metricbeat: `metricbeat`
 
 Make sure to restart the respective services after making any changes to the configuration files.
 

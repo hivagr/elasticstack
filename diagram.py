@@ -3,7 +3,7 @@ from diagrams.aws.analytics import ES
 from diagrams.elastic.agent import Agent
 from diagrams.elastic.agent import Fleet
 from diagrams.elastic.beats import APM
-#from diagrams.elastic.observability import APM
+from diagrams.elastic.observability import APM
 from diagrams.elastic.elasticsearch import Beats
 from diagrams.elastic.elasticsearch import Kibana
 from diagrams.elastic.elasticsearch import Logstash
@@ -26,6 +26,7 @@ with Diagram("Docker cluster", show=True):
 
     with Cluster("Elastic"):
 
+        apmagent      = APM("APM-agent: " +apm_version)
         apmserver     = APM("APM-server: " +apm_version)
         metricbeat    = Beats("Metricbeat: " +metricbeat_version)
         filebeat      = Beats("Filebeat: " +filebeat_version)
@@ -34,7 +35,8 @@ with Diagram("Docker cluster", show=True):
         kibana        = Kibana("Kibana: " +kibana_version)
         elasticsearch = ES("Elasticsearch: " +elastic_version)
 
-    apmserver >> fleet_server
+    apmagent >> fleet_server
+    apmserver >> elasticsearch
     metricbeat >> elasticsearch
     filebeat >> elasticsearch
     fleet_server >> elasticsearch

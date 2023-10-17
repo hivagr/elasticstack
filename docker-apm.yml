@@ -32,17 +32,6 @@ services:
 volumes:
   certs:
     driver: local
-  eslogs01:
-    driver: local
-  eslogs02:
-    driver: local
-  esdata01:
-    driver: local
-  esdata02:
-    driver: local
-  kibanadata:
-    driver: local
-
 
 networks:
   elastic:
