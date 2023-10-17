@@ -23,5 +23,5 @@ setup.kibana:
   password: 'elastic'
 
 #http.enabled: true
+#http.port: 5066
 #monitoring.enabled: false
-xpack.monitoring.enabled: true

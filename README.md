@@ -1,18 +1,17 @@
-# Elastic Stack Docker Compose Repository
+# Elastic Stack
+
+## Content
+
+- [Prerequisites](#prerequisites)
+- [Install](#install)
+- [Usage](#usage)
+
 
 This repository contains a Docker Compose file that allows you to easily set up and deploy the Elastic Stack, consisting of Elasticsearch, Kibana, Logstash, Filebeat, and Metricbeat.
 
 The Elastic Stack is a powerful suite of open-source tools used for centralized logging, log analysis, and monitoring.
 
 ![](docker_cluster.png)
-
-## Contents
-
-* Prerequisites
-* Usage
-* Configuration
-* Contributing
-* License
 
 ## Prerequisites
 
@@ -21,33 +20,98 @@ Before using this Docker Compose configuration, make sure you have the following
 * Docker: [Install Docker](https://docs.docker.com/install/)
 * Docker Compose: [Install Docker Compose](https://docs.docker.com/compose/install/)
 
-## Usage
+## Install
+
 To start the Elastic Stack services, follow these steps:
 
 1. Clone this repository to your local machine.
 2. Navigate to the repository directory.
 
-```bash
-$ git clone https://github.com/hivagr/elastic-stack-docker.git
-$ cd elastic-stack-docker
+```
+$ git clone https://github.com/hivagr/elasticstack.git
+$ cd elasticstack
 ```
 
 3. Adjust the configuration files as needed (see the Configuration section below).
-4. Start the services using Docker Compose.
 
-```bash
+### Start Basic
+
+Start the basic services using Docker Compose.
+
+```
 $ docker-compose up -d
 ```
 
-This command will pull the necessary Docker images, create and start the containers in the background. Please note that the first startup might take a few minutes as the images are downloaded.
+This command will pull the necessary Docker images, create and start the containers (Elasticsearch, Logstash, Kibana, Metricbeat & Filebeat) in the background. Please note that the first startup might take a few minutes as the images are downloaded.
 
-5. Once the services are up and running, you can access the following components:
+1. Once the services are up and running, you can access the following components:
 * Elasticsearch: http://localhost:9200
 * Kibana: http://localhost:5601
 
-## Example messages
+### Start Fleet server
 
-### Logstash
+To install the Fleet server follow the following steps:
+
+1. Go to [Fleet Settings](http://localhost:5601/app/fleet/agents) go to outputs and edit the Hosts field:
+
+   from `http://elasticsearch:9200` to `https://es01:9200`
+
+   In the **Advanced YAML configuration** field add:
+
+   ```
+   ssl.certificate_authorities: ['/usr/share/certs/ca/ca.crt']
+   ```
+
+   click on **Save and apply settings** and **Save and deploy**
+
+
+2. Go to [Fleet Agents](http://localhost:5601/app/fleet) click on **add server** and fill in the name `fleet-server` and add the url `https://fleet-server:8220`  and click on **Generate Fleet Server Policy**
+
+   Now copy the `fleet-server-service-token` from the output and paste it in the `docker-fleet-server.yml` as the value of the environment variable `FLEET_SERVER_SERVICE_TOKEN`
+
+   Start the docker-compose file this wil start a elastic-agent with a fleet-server integration and add it to elastic cluster.
+   ```
+   docker-compose -f docker-fleet-server.yml up -d
+   ```
+
+### Start APM
+
+1. Go the [APM](http://localhost:5601/app/home#/tutorial/apm) integration and click on **APM integration** and then on **Add Elastic APM** <br>
+
+   Fill in the following fields:
+
+   **Integration name:** `apm`<br>
+   **Host:** `apm-server:8200`<br>
+   **URL:** `http://apm-server:8200`<br>
+   **New agent policy name::** `http://apm-policy`<br>
+
+   And click on **Save and continue**
+
+2. Now a pop-up is shown click now on **Add Elastic Agent to your hosts**
+3. Copy from the output the `enrollment-token` and paste it in the `docker-agent-apm.yml` as the value of the environment variable `FLEET_ENROLLMENT_TOKEN`
+4. Start now the docker-compose file this wil start a elastic-agent container with the APM integration and add it to the elastic cluster.
+   ```
+   docker-compose -f docker-agent-apm up -d
+   ```
+5. Click now on **Install APM Agent** and then **Check APM Server status**
+
+
+## Usage
+
+The configuration files for each component are located in the config directory. Feel free to modify these files according to your requirements.
+
+Here's a brief overview of each component's configuration directories:
+
+* Logstash: `logstash`
+* Filebeat: `filebeat`
+
+Make sure to restart the respective services after making any changes to the configuration files.
+
+### Example messages
+
+In the `usage` directory you can find some files that you can use for the usage of Elastic.
+
+#### Logstash
 
 This will post a minimal message on port `5044` where logstash is listening on:
 
@@ -66,17 +130,3 @@ This will post a couple of messages on port `5044` where logstash is listening o
 ```bash
 ./send_http_logstash.sh
 ```
-
-## Configuration
-
-The configuration files for each component are located in the config directory. Feel free to modify these files according to your requirements.
-
-Here's a brief overview of each component's configuration directories:
-
-* Logstash: `logstash-config` & `logstash-pipeline`
-* Filebeat: `filebeat-config`
-
-Make sure to restart the respective services after making any changes to the configuration files.
-
-## Contributing
-If you encounter any issues or have suggestions for improvements, please feel free to open an issue or submit a pull request. We welcome contributions from the community!
