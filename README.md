@@ -85,9 +85,9 @@ There are 2 option that you can use for APM one that runs as a integration based
    Fill in the following fields:
 
    **Integration name:** `apm`<br>
-   **Host:** `apm-server:8200`<br>
-   **URL:** `http://apm-server:8200`<br>
-   **New agent policy name::** `http://apm-policy`<br>
+   **Host:** `agent-apm:8200`<br>
+   **URL:** `http://agent-apm:8200`<br>
+   **New agent policy name::** `apm-policy`<br>
 
    And click on **Save and continue**
 
