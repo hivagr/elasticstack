@@ -7,7 +7,7 @@ services:
       - FLEET_URL=https://fleet-server:8220
       - FLEET_SERVER_ELASTICSEARCH_HOST=https://es01:9200
       - FLEET_CA=/usr/share/certs/ca/ca.crt
-      - FLEET_SERVER_SERVICE_TOKEN=AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL3Rva2VuLTE2OTc1MjU5NzY3NTE6N0lqZ3RvbVpTNTZIZmREajBXTWJKUQ
+      - FLEET_SERVER_SERVICE_TOKEN=< TOKEN >
       - FLEET_SERVER_POLICY_ID=fleet-server-policy
       - FLEET_SERVER_ELASTICSEARCH_CA=/usr/share/certs/ca/ca.crt
       - CERTIFICATE_AUTHORITIES=/usr/share/certs/ca/ca.crt
