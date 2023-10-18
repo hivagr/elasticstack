@@ -2,30 +2,15 @@ version: "3.9"
 
 services:
   apm-server:
-    healthcheck:
-      test: ["CMD", "curl", "--write-out", "'HTTP %{http_code}'", "--silent", "--output", "/dev/null", "http://localhost:8200/healthcheck"]
-      interval: 10s
-      timeout: 10s
-      retries: 120
     image: docker.elastic.co/apm/apm-server:${STACK_VERSION}
     hostname: apm-server
     ports:
       - "8200:8200"
+      - "5067:5067"
     volumes:
       - './apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro'
       - certs:/usr/share/apm-server/certs
-    cap_drop:
-      - ALL
-    cap_add:
-      - CHOWN
-      - DAC_OVERRIDE
-      - SETGID
-      - SETUID
-    logging:
-      driver: 'json-file'
-      options:
-          max-size: '2m'
-          max-file: '5'
+    user: apm-server
     networks:
       - elastic
 
